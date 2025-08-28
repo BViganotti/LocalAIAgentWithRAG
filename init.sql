@@ -3,7 +3,7 @@
 -- Table to store generated articles/posts
 CREATE TABLE generated_content (
     id SERIAL PRIMARY KEY,
-    platform VARCHAR(20) NOT NULL CHECK (platform IN ('reddit', 'linkedin', 'twitter')),
+    platform VARCHAR(20) NOT NULL CHECK (platform IN ('reddit', 'linkedin', 'twitter', 'newsletter')),
     topic_source VARCHAR(255) NOT NULL,
     topic_title VARCHAR(500) NOT NULL,
     content TEXT NOT NULL,

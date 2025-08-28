@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Content Agent - Recent Articles{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #2d3748;">📚 Recent Articles</h2>
+
+{% if stats and stats.platform_breakdown %}
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_content }}</div>
+        <div class="stat-label">Total Articles</div>
+    </div>
+    {% for platform_stat in stats.platform_breakdown %}
+    <div class="stat-card">
+        <div class="stat-number">{{ platform_stat.count }}</div>
+        <div class="stat-label">{{ platform_stat.platform|title }} Articles</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if articles %}
+<div class="article-grid">
+    {% for article in articles %}
+    <div class="article-card">
+        <div class="article-header">
+            <span class="platform-icon">{{ article.platform_icon }}</span>
+            <span class="platform-name">{{ article.platform }}</span>
+        </div>
+        
+        <h3 class="article-title">{{ article.topic_title }}</h3>
+        
+        <div class="article-meta">
+            <span>📅 {{ article.created_at }}</span>
+            <span>📝 {{ article.word_count }} words</span>
+        </div>
+        
+        <div class="article-preview">
+            {{ article.content_preview }}
+        </div>
+        
+        <div class="article-stats">
+            <div style="color: #718096; font-size: 0.9rem;">
+                <span>📊 {{ article.char_count }} chars</span>
+                {% if article.metadata and article.metadata.generation_timestamp %}
+                <span style="margin-left: 15px;">⚡ Generated</span>
+                {% endif %}
+            </div>
+            <a href="/article/{{ article.id }}" class="read-more">Read Full Article →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align: center; padding: 40px; color: #718096;">
+    <h3>📝 No Articles Found</h3>
+    <p style="margin-top: 10px;">No articles have been generated yet. Use the Content Agent to create some articles!</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">
+        Run <code>python3 main.py</code> to generate content using the enhanced AI pipeline.
+    </p>
+</div>
+{% endif %}
+{% endblock %}

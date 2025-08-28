@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ platform|title }} Articles - Content Agent{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; margin-bottom: 25px;">
+    <span style="font-size: 3rem; margin-right: 15px;">{{ platform_icon }}</span>
+    <div>
+        <h2 style="color: #2d3748; font-size: 2.2rem; margin-bottom: 5px;">{{ platform|title }} Articles</h2>
+        <p style="color: #718096;">All content generated for {{ platform|title }} platform</p>
+    </div>
+</div>
+
+{% if articles %}
+<div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+        <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #667eea;">{{ articles|length }}</div>
+            <div style="color: #718096; font-size: 0.9rem;">Total Articles</div>
+        </div>
+        <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #38a169;">
+                {{ (articles|sum(attribute='word_count') / articles|length)|round|int if articles else 0 }}
+            </div>
+            <div style="color: #718096; font-size: 0.9rem;">Avg Words</div>
+        </div>
+        <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #ed8936;">
+                {{ articles|sum(attribute='word_count') }}
+            </div>
+            <div style="color: #718096; font-size: 0.9rem;">Total Words</div>
+        </div>
+    </div>
+</div>
+
+<div class="article-grid">
+    {% for article in articles %}
+    <div class="article-card">
+        <div class="article-header">
+            <span class="platform-icon">{{ article.platform_icon }}</span>
+            <span class="platform-name">{{ article.platform }}</span>
+        </div>
+        
+        <h3 class="article-title">{{ article.topic_title }}</h3>
+        
+        <div class="article-meta">
+            <span>📅 {{ article.created_at }}</span>
+            <span>📝 {{ article.word_count }} words</span>
+        </div>
+        
+        <div class="article-preview">
+            {{ article.content_preview }}
+        </div>
+        
+        <div class="article-stats">
+            <div style="color: #718096; font-size: 0.9rem;">
+                <span>📊 {{ article.char_count }} chars</span>
+                {% if article.metadata and article.metadata.content_type %}
+                <span style="margin-left: 15px;">🎨 {{ article.metadata.content_type|title }}</span>
+                {% endif %}
+            </div>
+            <a href="/article/{{ article.id }}" class="read-more">Read Full Article →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align: center; padding: 60px 20px; color: #718096;">
+    <div style="font-size: 4rem; margin-bottom: 20px;">{{ platform_icon }}</div>
+    <h3>No {{ platform|title }} Articles Found</h3>
+    <p style="margin-top: 15px; font-size: 1.1rem;">
+        No articles have been generated for {{ platform|title }} yet.
+    </p>
+    <p style="margin-top: 10px;">
+        Use the Content Agent pipeline to generate {{ platform|title }} content:
+    </p>
+    <div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-top: 20px; text-align: left; font-family: 'Monaco', monospace; font-size: 0.9rem;">
+        <div>1. Run: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">python3 main.py</code></div>
+        <div style="margin-top: 5px;">2. Select option 1 (Generate content for specific topic)</div>
+        <div style="margin-top: 5px;">3. Choose {{ platform|title }} as the target platform</div>
+        <div style="margin-top: 5px;">4. Configure quality optimization settings</div>
+    </div>
+</div>
+{% endif %}
+
+<div style="margin-top: 30px; text-align: center;">
+    <a href="/" class="read-more" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+        ← Browse All Articles
+    </a>
+</div>
+{% endblock %}

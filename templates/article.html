@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.topic_title }} - Content Agent{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="/" style="color: #667eea; text-decoration: none; font-weight: 600;">
+        ← Back to Articles
+    </a>
+</div>
+
+<div class="article-header" style="margin-bottom: 25px;">
+    <span class="platform-icon" style="font-size: 2rem;">{{ article.platform_icon }}</span>
+    <span class="platform-name" style="font-size: 1rem; padding: 8px 16px;">{{ article.platform }}</span>
+</div>
+
+<h1 style="font-size: 2.5rem; color: #2d3748; margin-bottom: 20px; line-height: 1.3;">
+    {{ article.topic_title }}
+</h1>
+
+<div class="article-meta" style="margin-bottom: 30px; padding: 20px; background: #f7fafc; border-radius: 12px; border-left: 4px solid #667eea;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div>
+            <strong>📅 Created:</strong><br>
+            {{ article.created_at }}
+        </div>
+        <div>
+            <strong>📊 Statistics:</strong><br>
+            {{ article.word_count }} words, {{ article.char_count }} characters
+        </div>
+        <div>
+            <strong>📁 Source:</strong><br>
+            {{ article.topic_source }}
+        </div>
+        {% if article.metadata and article.metadata.content_type %}
+        <div>
+            <strong>🎨 Type & Tone:</strong><br>
+            {{ article.metadata.content_type|title }} • {{ article.metadata.tone|title if article.metadata.tone else 'Standard' }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="article-content" style="font-size: 1.1rem; line-height: 1.8; color: #2d3748;">
+    {{ article.content|safe }}
+</div>
+
+{% if article.metadata %}
+<div style="margin-top: 40px; padding: 25px; background: #f7fafc; border-radius: 12px;">
+    <h3 style="color: #4a5568; margin-bottom: 15px;">📊 Article Metadata</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        {% if article.metadata.generation_timestamp %}
+        <div>
+            <strong>⚡ Generated:</strong><br>
+            <span style="color: #718096;">{{ article.metadata.generation_timestamp[:19]|replace('T', ' ') }}</span>
+        </div>
+        {% endif %}
+        
+        {% if article.metadata.optimized %}
+        <div>
+            <strong>🔧 Optimized:</strong><br>
+            <span style="color: #38a169;">✅ Content was optimized for quality</span>
+        </div>
+        {% endif %}
+        
+        {% if article.metadata.variation_index is defined %}
+        <div>
+            <strong>🎯 Variation:</strong><br>
+            <span style="color: #718096;">Version {{ article.metadata.variation_index + 1 }}</span>
+        </div>
+        {% endif %}
+        
+        {% if article.metadata.char_count %}
+        <div>
+            <strong>📏 Length Analysis:</strong><br>
+            <span style="color: #718096;">
+                {% if article.metadata.char_count < 500 %}Short Form{% elif article.metadata.char_count < 1500 %}Medium Form{% else %}Long Form{% endif %}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if article.metadata and (article.metadata.keys()|list|length > 4) %}
+    <details style="margin-top: 20px;">
+        <summary style="cursor: pointer; color: #667eea; font-weight: 600;">🔍 View Raw Metadata</summary>
+        <pre style="background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 8px; margin-top: 10px; overflow-x: auto; font-size: 0.9rem;">{{ article.metadata|tojson(indent=2) }}</pre>
+    </details>
+    {% endif %}
+</div>
+{% endif %}
+
+<div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+    <h3 style="margin-bottom: 15px;">🚀 Raw Content</h3>
+    <p style="margin-bottom: 15px; opacity: 0.9;">Copy the raw content below for use on {{ article.platform|title }}:</p>
+    <textarea readonly style="width: 100%; height: 150px; padding: 15px; border-radius: 8px; border: none; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; resize: vertical;" onclick="this.select()">{{ article.content_raw }}</textarea>
+    <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">💡 Click the text area above to select all content for easy copying</p>
+</div>
+
+<div style="margin-top: 30px; text-align: center;">
+    <a href="/platform/{{ article.platform }}" class="read-more" style="margin-right: 15px;">
+        View More {{ article.platform|title }} Articles
+    </a>
+    <a href="/" class="read-more" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+        Browse All Articles
+    </a>
+</div>
+{% endblock %}

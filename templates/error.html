@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Content Agent{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 60px 20px;">
+    <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
+    <h2 style="color: #e53e3e; margin-bottom: 20px;">Oops! Something went wrong</h2>
+    
+    <div class="error">
+        <p style="font-size: 1.1rem; margin-bottom: 15px;">{{ error }}</p>
+    </div>
+    
+    <div style="margin-top: 30px; background: #f7fafc; padding: 25px; border-radius: 12px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <h3 style="color: #4a5568; margin-bottom: 15px; text-align: center;">🛠️ Troubleshooting</h3>
+        
+        <div style="space-y: 10px;">
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #2d3748;">Database Connection Issues:</strong>
+                <ul style="margin-top: 5px; color: #718096; padding-left: 20px;">
+                    <li>Ensure PostgreSQL is running on port 5433</li>
+                    <li>Check database credentials in database.py</li>
+                    <li>Verify the content_agent database exists</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #2d3748;">No Articles Found:</strong>
+                <ul style="margin-top: 5px; color: #718096; padding-left: 20px;">
+                    <li>Generate content using: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">python3 main.py</code></li>
+                    <li>Ensure the enhanced pipeline completed successfully</li>
+                    <li>Check that content was saved to the database</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #2d3748;">Missing Dependencies:</strong>
+                <ul style="margin-top: 5px; color: #718096; padding-left: 20px;">
+                    <li>Install Flask: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">pip install flask</code></li>
+                    <li>Install psycopg2: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">pip install psycopg2-binary</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <a href="/" class="read-more" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); margin-right: 15px;">
+            🏠 Return Home
+        </a>
+        <button onclick="window.location.reload()" class="read-more" style="border: none; cursor: pointer;">
+            🔄 Retry
+        </button>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: #edf2f7; border-radius: 12px; font-family: 'Monaco', monospace; font-size: 0.9rem; color: #4a5568;">
+        <strong>Quick Start Commands:</strong><br><br>
+        <div style="text-align: left;">
+            # Start PostgreSQL (if using Docker)<br>
+            docker-compose up -d<br><br>
+            
+            # Generate sample content<br>
+            python3 main.py<br><br>
+            
+            # Start web interface<br>
+            python3 web_app.py
+        </div>
+    </div>
+</div>
+{% endblock %}

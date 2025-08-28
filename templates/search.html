@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Search: "{{ query }}" - Content Agent{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 25px;">
+    <h2 style="color: #2d3748; margin-bottom: 10px;">
+        🔍 Search Results for "{{ query }}"
+    </h2>
+    <p style="color: #718096;">
+        Found {{ count }} article{{ 's' if count != 1 else '' }} matching your search
+    </p>
+</div>
+
+{% if articles %}
+<div class="article-grid">
+    {% for article in articles %}
+    <div class="article-card">
+        <div class="article-header">
+            <span class="platform-icon">{{ article.platform_icon }}</span>
+            <span class="platform-name">{{ article.platform }}</span>
+        </div>
+        
+        <h3 class="article-title">
+            {% set title = article.topic_title %}
+            {% set query_lower = query.lower() %}
+            {% if query_lower in title.lower() %}
+                {{ title|replace(query, '<mark style="background: #fef5e7; padding: 2px 4px; border-radius: 3px; font-weight: 600;">' + query + '</mark>')|safe }}
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </h3>
+        
+        <div class="article-meta">
+            <span>📅 {{ article.created_at }}</span>
+            <span>📝 {{ article.word_count }} words</span>
+        </div>
+        
+        <div class="article-preview">
+            {% set preview = article.content_preview %}
+            {% if query_lower in preview.lower() %}
+                {{ preview|replace(query, '<mark style="background: #fef5e7; padding: 2px 4px; border-radius: 3px; font-weight: 600;">' + query + '</mark>')|safe }}
+            {% else %}
+                {{ preview }}
+            {% endif %}
+        </div>
+        
+        <div class="article-stats">
+            <div style="color: #718096; font-size: 0.9rem;">
+                <span>📊 {{ article.char_count }} chars</span>
+                <span style="margin-left: 15px;">📁 {{ article.topic_source|truncate(20, True) }}</span>
+            </div>
+            <a href="/article/{{ article.id }}" class="read-more">Read Full Article →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background: #f7fafc; border-radius: 12px; text-align: center;">
+    <h3 style="color: #4a5568; margin-bottom: 15px;">🎯 Refine Your Search</h3>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <a href="/search?q=AI" style="background: #e2e8f0; color: #4a5568; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.background='#cbd5e0'" onmouseout="this.style.background='#e2e8f0'">🤖 AI</a>
+        <a href="/search?q=productivity" style="background: #e2e8f0; color: #4a5568; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.background='#cbd5e0'" onmouseout="this.style.background='#e2e8f0'">⚡ Productivity</a>
+        <a href="/search?q=work" style="background: #e2e8f0; color: #4a5568; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.background='#cbd5e0'" onmouseout="this.style.background='#e2e8f0'">💼 Work</a>
+        <a href="/search?q=technology" style="background: #e2e8f0; color: #4a5568; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.background='#cbd5e0'" onmouseout="this.style.background='#e2e8f0'">🔧 Technology</a>
+        <a href="/search?q=trends" style="background: #e2e8f0; color: #4a5568; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.background='#cbd5e0'" onmouseout="this.style.background='#e2e8f0'">📈 Trends</a>
+    </div>
+    <p style="color: #718096; font-size: 0.9rem;">Or try searching for specific topics, platforms, or keywords</p>
+</div>
+
+{% else %}
+<div style="text-align: center; padding: 60px 20px; color: #718096;">
+    <div style="font-size: 4rem; margin-bottom: 20px;">🔍</div>
+    <h3>No Articles Found</h3>
+    <p style="margin-top: 15px; font-size: 1.1rem;">
+        No articles match your search for "<strong>{{ query }}</strong>".
+    </p>
+    <div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-top: 25px;">
+        <h4 style="color: #4a5568; margin-bottom: 15px;">💡 Search Tips</h4>
+        <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+            <p style="margin-bottom: 10px;">• Try broader search terms</p>
+            <p style="margin-bottom: 10px;">• Check spelling and try alternative words</p>
+            <p style="margin-bottom: 10px;">• Search for topic keywords like "AI", "productivity", or "work"</p>
+            <p>• Use the platform filters to narrow your search</p>
+        </div>
+    </div>
+    
+    <div style="margin-top: 25px;">
+        <a href="/" class="read-more" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+            Browse All Articles
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<div style="margin-top: 30px; text-align: center;">
+    <a href="/" class="read-more" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+        ← Back to All Articles
+    </a>
+</div>
+{% endblock %}
